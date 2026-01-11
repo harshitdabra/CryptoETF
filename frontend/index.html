@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crypto ETF Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">Crypto ETF Tracker</a>
+            <div class="nav-links">
+                <a href="/" class="active">All ETFs</a>
+                <a href="/bitcoin-etf">Bitcoin ETFs</a>
+                <a href="/ethereum-etf">Ethereum ETFs</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1>Crypto ETF Dashboard</h1>
+            <p>Real-time tracking of Bitcoin and Ethereum ETF flows</p>
+            <div class="last-updated" style="margin-top: 1rem;">
+                <span class="dot"></span>
+                <span>Last updated: <strong id="last-update-time">Loading...</strong></span>
+            </div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Total Combined Flow</div>
+                <div class="metric-value" data-metric="total-flow">Loading...</div>
+                <div class="metric-footer">
+                    <span class="metric-period" id="current-period">Last 7 Days</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-label">Bitcoin ETF Flow</div>
+                <div class="metric-value" data-metric="btc-flow">Loading...</div>
+                <div class="metric-footer">
+                    <span class="metric-period" id="btc-period">Last 7 Days</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-label">Ethereum ETF Flow</div>
+                <div class="metric-value" data-metric="eth-flow">Loading...</div>
+                <div class="metric-footer">
+                    <span class="metric-period" id="eth-period">Last 7 Days</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-header-info">
+                <div class="chart-title-group">
+                    <h2>ETF Net Flow Chart</h2>
+                    <div class="date-range" id="chart-date-range">Loading...</div>
+                </div>
+                <div class="chart-controls">
+                    <button data-period="7d" class="active">7d</button>
+                    <button data-period="30d">30d</button>
+                    <button data-period="90d">90d</button>
+                    <button data-period="1y">1y</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="combined-flow-chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

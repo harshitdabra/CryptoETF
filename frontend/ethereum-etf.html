@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ethereum ETF Tracker</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="/" class="logo">Crypto ETF Tracker</a>
+            <div class="nav-links">
+                <a href="/">All ETFs</a>
+                <a href="/bitcoin-etf">Bitcoin ETFs</a>
+                <a href="/ethereum-etf" class="active">Ethereum ETFs</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="main-container">
+        <div class="page-header">
+            <h1>Ethereum ETF Tracker</h1>
+            <p>Track Ethereum ETF flows, holdings, and market data</p>
+            <div class="last-updated" style="margin-top: 1rem;">
+                <span class="dot"></span>
+                <span>Last updated: <strong id="last-update-time">Loading...</strong></span>
+            </div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-label">Ethereum ETF Net Flow</div>
+                <div class="metric-value" data-metric="eth-net-flow">Loading...</div>
+                <div class="metric-footer">
+                    <span class="metric-period" id="eth-current-period">Last 30 Days</span>
+                </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-label">Historical Values</div>
+                <div class="historical-grid">
+                    <div>
+                        <span>Last Week</span>
+                        <strong data-period="last-week">--</strong>
+                    </div>
+                    <div>
+                        <span>Last Month</span>
+                        <strong data-period="last-month">--</strong>
+                    </div>
+                    <div>
+                        <span>Last 3 Months</span>
+                        <strong data-period="last-3-months">--</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-section">
+            <div class="chart-header-info">
+                <div class="chart-title-group">
+                    <h2>Ethereum ETF Net Flow Chart</h2>
+                    <div class="date-range" id="eth-date-range">Loading...</div>
+                </div>
+                <div class="chart-controls">
+                    <button data-period="7d">7d</button>
+                    <button data-period="30d" class="active">30d</button>
+                    <button data-period="90d">90d</button>
+                    <button data-period="1y">1y</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <canvas id="ethereum-flow-chart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/utils.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/ethereum-page.js"></script>
+</body>
+</html>
