@@ -2,8 +2,7 @@ let combinedChart = null;
 
 async function loadDashboardData(days = 7) {
     try {
-        // CHANGED: Use window.API_BASE_URL instead of hardcoded localhost
-        const response = await fetch(`${window.API_BASE_URL}/api/etf/combined?days=${days}`);
+        const response = await fetch(`https://cryptoetf.onrender.com/api/etf/combined?days=${days}`);
         const data = await response.json();
         
         if (!data.success) {
@@ -58,3 +57,4 @@ document.addEventListener('DOMContentLoaded', function() {
     loadDashboardData(7);
     initControls();
 });
+
