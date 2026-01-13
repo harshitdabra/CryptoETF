@@ -2,7 +2,8 @@ let combinedChart = null;
 
 async function loadDashboardData(days = 7) {
     try {
-        const response = await fetch(`http://localhost:5000/api/etf/combined?days=${days}`);
+        // CHANGED: Use window.API_BASE_URL instead of hardcoded localhost
+        const response = await fetch(`${window.API_BASE_URL}/api/etf/combined?days=${days}`);
         const data = await response.json();
         
         if (!data.success) {
