@@ -6,14 +6,12 @@ import os
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from config import Config
-
 class CoinGlassClient:
     """CoinGlass API Client"""
     
     def __init__(self):
         self.base_url = 'https://open-api-v4.coinglass.com/api'
-        self.api_key = Config.COINGLASS_API_KEY
+        self.api_key = os.getenv('COINGLASS_API_KEY')
         self.headers = {
             'CG-API-KEY': self.api_key,
             'accept': 'application/json'
@@ -67,3 +65,4 @@ class CoinGlassClient:
         """Get list of all Ethereum ETFs"""
         print("[DEBUG] Calling get_ethereum_etf_list...")
         return self._make_request('etf/ethereum/list')
+
