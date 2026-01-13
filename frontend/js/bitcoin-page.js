@@ -2,7 +2,7 @@ let bitcoinChart = null;
 
 async function loadBitcoinData(days = 30) {
     try {
-        const response = await fetch(`http://localhost:5000/api/etf/bitcoin/flows?days=${days}`);
+        const response = await fetch(`${window.API_BASE_URL}/api/etf/bitcoin/flows?days=${days}`);
         const data = await response.json();
         
         if (!data.success) return;
@@ -48,3 +48,4 @@ document.addEventListener('DOMContentLoaded', function() {
     loadBitcoinData(30);
     initBitcoinControls();
 });
+
