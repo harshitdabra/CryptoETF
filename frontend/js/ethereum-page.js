@@ -1,47 +1,90 @@
-document.addEventListener("DOMContentLoaded", () => {
-  loadEthereumData();
-});
+let ethereumChart = null;
 
-async function loadEthereumData() {
-  try {
-    // ---- REQUIRED DOM ELEMENTS ----
-    const priceEl = document.getElementById("eth-price");
-    const marketCapEl = document.getElementById("eth-market-cap");
-    const supplyEl = document.getElementById("eth-supply");
-    const loadingEl = document.getElementById("loading");
-
-    // HARD FAIL if HTML is wrong
-    if (!priceEl || !marketCapEl || !supplyEl) {
-      console.error("ETH page DOM elements missing");
-      return;
-    }
-
-    // ---- API CALL ----
-    const res = await fetch(`${window.API_BASE_URL}/api/ethereum`);
-
-    if (!res.ok) {
-      throw new Error(`ETH API failed: ${res.status}`);
-    }
-
-    const data = await res.json();
-
-    // ---- DATA GUARDS ----
-    if (!data || !data.price) {
-      throw new Error("Invalid ETH API response");
-    }
-
-    // ---- UPDATE UI ----
-    priceEl.textContent = `$${Number(data.price).toLocaleString()}`;
-    marketCapEl.textContent = `$${Number(data.market_cap).toLocaleString()}`;
-    supplyEl.textContent = Number(data.circulating_supply).toLocaleString();
-
-    if (loadingEl) loadingEl.style.display = "none";
-  } catch (err) {
-    console.error("ETH page error:", err);
-
-    const loadingEl = document.getElementById("loading");
-    if (loadingEl) {
-      loadingEl.textContent = "Failed to load Ethereum data";
-    }
-  }
+function getEl(selector) {
+    return document.querySelector(selector);
 }
+
+async function loadEthereumData(days = 30) {
+    const flowEl = getEl('[data-metric="eth-net-flow"]');
+    const periodEl = getEl('#eth-current-period');
+    const rangeEl = getEl('#eth-date-range');
+    const canvasEl = document.getElementById('ethereum-flow-chart');
+
+    if (!flowEl || !periodEl || !rangeEl || !canvasEl) {
+        console.error('ETH page DOM elements missing', {
+            flowEl,
+            periodEl,
+            rangeEl,
+            canvasEl
+        });
+        return;
+    }
+
+    try {
+        const url = `${window.API_BASE_URL}/api/etf/ethereum/flows?days=${days}`;
+        console.log('Fetching ETH data:', url);
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (!data || data.success !== true) {
+            console.error('ETH API failed:', data);
+            return;
+        }
+
+        flowEl.textContent = formatCurrency(data.total_flow);
+        flowEl.classList.remove('positive', 'negative');
+        flowEl.classList.add(data.total_flow >= 0 ? 'positive' : 'negative');
+
+        getEl('[data-period="last-week"]').textContent =
+            formatCurrency(data.last_week);
+        getEl('[data-period="last-month"]').textContent =
+            formatCurrency(data.last_month);
+        getEl('[data-period="last-3-months"]').textContent =
+            formatCurrency(data.last_3_months);
+
+        periodEl.textContent = getPeriodText(days);
+        rangeEl.textContent = data.date_range;
+        updateLastUpdateTime();
+
+        // ---- CHART ----
+        if (Array.isArray(data.chart_data) && data.chart_data.length > 0) {
+            if (ethereumChart) ethereumChart.destroy();
+
+            ethereumChart = Charts.createFlowChart(
+                'ethereum-flow-chart',
+                data.chart_data,
+                'Ethereum'
+            );
+        }
+    } catch (err) {
+        console.error('ETH load error:', err);
+    }
+}
+
+function initEthereumControls() {
+    const buttons = document.querySelectorAll('.chart-controls button');
+
+    buttons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const daysMap = {
+                '7d': 7,
+                '30d': 30,
+                '90d': 90,
+                '1y': 365
+            };
+
+            const days = daysMap[btn.dataset.period] || 30;
+            loadEthereumData(days);
+        });
+    });
+}
+
+window.addEventListener('load', () => {
+    console.log('ETH page loaded');
+    loadEthereumData(30);
+    initEthereumControls();
+});
