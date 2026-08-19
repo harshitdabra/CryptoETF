@@ -1,10 +1,21 @@
-from flask import Flask, jsonify, request, send_from_directory
-from flask_cors import CORS
-from api.coinglass_client import CoinGlassClient
-from api.data_processor import DataProcessor
+import os
+import sys
 import traceback
 
-app = Flask(__name__, static_folder='../frontend', static_url_path='')
+from flask import Flask, jsonify, request, send_from_directory
+from flask_cors import CORS
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
+from api.coinglass_client import CoinGlassClient
+from api.data_processor import DataProcessor
+
+PROJECT_ROOT = os.path.dirname(BASE_DIR)
+STATIC_DIR = os.path.join(PROJECT_ROOT, 'frontend')
+
+app = Flask(__name__, static_folder=STATIC_DIR, static_url_path='')
 CORS(app)
 
 coinglass = CoinGlassClient()
@@ -145,12 +156,13 @@ def get_ethereum_etf_list():
         return jsonify({'error': str(e), 'success': False}), 500
 
 if __name__ == '__main__':
+    port = int(os.getenv('PORT', 5000))
     print("\n" + "="*60)
     print("🚀 Crypto ETF Tracker API Server")
     print("="*60)
-    print("Dashboard: http://localhost:5000")
-    print("Bitcoin ETF: http://localhost:5000/bitcoin-etf")
-    print("Ethereum ETF: http://localhost:5000/ethereum-etf")
+    print(f"Dashboard: http://localhost:{port}")
+    print(f"Bitcoin ETF: http://localhost:{port}/bitcoin-etf")
+    print(f"Ethereum ETF: http://localhost:{port}/ethereum-etf")
     print("="*60 + "\n")
     
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=False, host='0.0.0.0', port=port)

@@ -11,16 +11,26 @@ class CoinGlassClient:
     
     def __init__(self):
         self.base_url = 'https://open-api-v4.coinglass.com/api'
-        self.api_key = os.getenv('COINGLASS_API_KEY')
+        self.api_key = os.getenv('COINGLASS_API_KEY') or ''
         self.headers = {
-            'CG-API-KEY': self.api_key,
             'accept': 'application/json'
         }
+        if self.api_key:
+            self.headers['CG-API-KEY'] = self.api_key
         self.max_records = 1000
-        print(f"[DEBUG] CoinGlass Client initialized with API key: {self.api_key[:10]}...")
+        if self.api_key:
+            print(f"[DEBUG] CoinGlass Client initialized with API key: {self.api_key[:10]}...")
+        else:
+            print("[WARN] COINGLASS_API_KEY is not set. Requests will fail until it is configured.")
     
     def _make_request(self, endpoint: str, params: Optional[Dict] = None) -> Dict:
         """Make API request"""
+        if not self.api_key:
+            return {
+                'success': False,
+                'data': [],
+                'error': 'COINGLASS_API_KEY is missing. Add it to your Vercel environment variables.'
+            }
         try:
             url = f"{self.base_url}/{endpoint}"
             print(f"[DEBUG] API Request URL: {url}")
